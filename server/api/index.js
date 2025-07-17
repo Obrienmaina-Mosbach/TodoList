@@ -9,4 +9,4 @@ const expressApp = createExpressApp(); // Create an instance of your Express app
 
 // Wrap the Express app with serverless-http.
 // The basePath option is removed; we will handle routing in server.js more explicitly.
-module.exports = serverless(expressApp);
+module.exports = serverless(expressApp); 
