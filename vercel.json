@@ -18,8 +18,12 @@
       "dest": "server/api/index.js"
     },
     {
+      "src": "/(.*\\..*)",
+      "dest": "/$1"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "/index.html"
     }
   ]
 }
