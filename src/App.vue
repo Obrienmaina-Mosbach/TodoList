@@ -1,21 +1,16 @@
-<!-- App.vue -->
 <template>
   <div :class="['min-h-screen flex flex-col items-center py-10 font-inter', themeClasses.bodyBg, themeClasses.bodyText]">
-    <!-- Background Video -->
     <video autoplay loop muted playsinline class="background-video">
       <source src="./assets/2235282-hd_1278_720_30fps.mp4" type="video/mp4">
-      <!-- Fallback for browsers that do not support the video tag -->
       Your browser does not support the video tag.
     </video>
 
     <div :class="['container rounded-xl shadow-xl p-8 md:p-12 max-w-2xl w-full relative z-10', themeClasses.containerBg]">
-      <!-- Header Section -->
       <header class="text-center mb-10 flex justify-between items-center flex-wrap gap-4">
         <h1 :class="['text-4xl font-bold flex items-center justify-center gap-4', themeClasses.headerText]">
           <i :class="['fas fa-clipboard-list', themeClasses.headerIcon]"></i>
-          O'brien'S To-Do List
+          O'brien's To-Do List
         </h1>
-        <!-- Theme Selector -->
         <div class="flex items-center gap-3">
           <label for="theme-select" :class="['text-sm font-medium', themeClasses.themeLabelText]">Theme:</label>
           <select
@@ -31,7 +26,6 @@
         </div>
       </header>
 
-      <!-- Add New Task Section -->
       <section class="mb-8 pb-6 border-b" :class="themeClasses.borderColor">
         <h2 :class="['text-2xl font-semibold mb-6 flex items-center gap-3', themeClasses.sectionHeaderText]">
           <i :class="['fas fa-plus-circle', themeClasses.sectionIconColor]"></i>
@@ -74,14 +68,12 @@
         </form>
       </section>
 
-      <!-- Task Management Controls (Search, Filter, Sort, Clear Completed) -->
       <section class="mb-8 pb-6 border-b" :class="themeClasses.borderColor">
         <h2 :class="['text-2xl font-semibold mb-6 flex items-center gap-3', themeClasses.sectionHeaderText]">
           <i :class="['fas fa-filter', themeClasses.filterIconColor]"></i>
           Manage Tasks
         </h2>
         <div class="flex flex-col md:flex-row gap-4 mb-6">
-          <!-- Search Input -->
           <input
             type="text"
             v-model="searchTerm"
@@ -89,7 +81,6 @@
             :class="['flex-grow p-3 border rounded-lg focus:outline-none focus:ring-2 transition duration-200', themeClasses.inputBorder, themeClasses.inputBg, themeClasses.inputText, themeClasses.inputFocusRing]"
           />
 
-          <!-- Filter by Status -->
           <select
             v-model="filterStatus"
             :class="['p-3 border rounded-lg focus:outline-none focus:ring-2 transition duration-200 md:w-auto w-full', themeClasses.inputBorder, themeClasses.inputBg, themeClasses.inputText, themeClasses.inputFocusRing]"
@@ -99,7 +90,6 @@
             <option value="completed">Completed</option>
           </select>
 
-          <!-- Sort By -->
           <select
             v-model="sortCriteria"
             :class="['p-3 border rounded-lg focus:outline-none focus:ring-2 transition duration-200 md:w-auto w-full', themeClasses.inputBorder, themeClasses.inputBg, themeClasses.inputText, themeClasses.inputFocusRing]"
@@ -110,7 +100,6 @@
             <option value="priority">Sort by Priority</option>
           </select>
         </div>
-        <!-- Clear Completed Button -->
         <button
           @click="clearCompletedTodos"
           v-if="todos.some(todo => todo.status === 'completed')"
@@ -120,7 +109,6 @@
         </button>
       </section>
 
-      <!-- Current Tasks Section -->
       <section>
         <h2 :class="['text-2xl font-semibold mb-6 flex items-center gap-3', themeClasses.sectionHeaderText]">
           <i :class="['fas fa-tasks', themeClasses.tasksIconColor]"></i>
@@ -154,6 +142,9 @@ import axios from 'axios';
 // --- API Base URL ---
 // Use environment variable for API_BASE_URL
 const API_BASE_URL = process.env.VUE_APP_API_BASE_URL;
+
+// --- Debugging Log ---
+console.log('API_BASE_URL:', API_BASE_URL); // ADDED FOR DEBUGGING
 
 // --- Reactive State for Todos and Inputs ---
 const todos = ref([]);
@@ -606,3 +597,4 @@ html, body {
   pointer-events: none;
 }
 </style>
+

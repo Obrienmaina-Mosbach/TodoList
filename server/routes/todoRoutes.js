@@ -41,6 +41,18 @@ router.post('/', async (req, res) => {
   }
 });
 
+// @desc    Clear all completed todos
+// @route   DELETE /api/todos/completed
+// @access  Public (for now)
+router.delete('/completed', async (req, res) => {
+  try {
+    await Todo.deleteMany({ status: 'completed' });
+    res.status(200).json({ message: 'All completed todos removed' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // @desc    Update a todo (status, name, description, priority)
 // @route   PUT /api/todos/:id
 // @access  Public (for now)
@@ -94,16 +106,5 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// @desc    Clear all completed todos
-// @route   DELETE /api/todos/completed
-// @access  Public (for now)
-router.delete('/completed', async (req, res) => {
-  try {
-    await Todo.deleteMany({ status: 'completed' });
-    res.status(200).json({ message: 'All completed todos removed' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
 
 module.exports = router;

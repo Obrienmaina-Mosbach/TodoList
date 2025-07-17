@@ -1,4 +1,3 @@
-<!-- TodoItem.vue -->
 <template>
   <li
     :class="[
@@ -13,7 +12,7 @@
       <input
         type="checkbox"
         :checked="todo.status === 'completed'"
-        @change="$emit('toggle-done', todo._id)" <!-- Changed to _id -->
+        @change="$emit('toggle-done', todo._id)"
         class="form-checkbox h-5 w-5 text-blue-600 rounded-md transition duration-150 ease-in-out cursor-pointer mr-3 mt-1 md:mt-0"
         style="display: block; opacity: 1; visibility: visible;"
       />
@@ -99,7 +98,7 @@
 
       <!-- Delete Button -->
       <button
-        @click="$emit('delete-todo', todo._id)" <!-- Changed to _id -->
+        @click="$emit('delete-todo', todo._id)"
         :class="['px-3 py-2 font-semibold rounded-lg shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75 transition duration-200 flex items-center gap-2 text-sm', themeClasses.deleteButtonBg, themeClasses.deleteButtonText, themeClasses.deleteButtonHover, themeClasses.deleteButtonFocus]"
       >
         <i class="fas fa-trash-alt"></i> Delete
@@ -152,110 +151,113 @@ const themeClasses = computed(() => {
     'Low': 'bg-blue-800', 'Medium': 'bg-yellow-800', 'High': 'bg-red-800'
   };
 
-  if (props.currentTheme === 'dark') {
-    return {
-      listItemBg: props.todo.status === 'completed' ? 'bg-emerald-900' : 'bg-gray-700',
-      listItemBorder: props.todo.status === 'completed' ? 'border-emerald-700' : 'border-gray-600',
-      listItemHoverShadow: 'hover:shadow-lg',
-      taskContentText: 'text-gray-100',
-      dueDateText: 'text-gray-400',
-      completedAtText: 'text-emerald-400',
+  const currentThemeColors = {
+    light: {
+      text: 'text-gray-800',
+      dueDate: 'text-gray-500',
+      completed: 'text-emerald-600',
+      completedIcon: 'fas fa-check-circle text-emerald-500',
+      pendingIcon: 'fas fa-clock text-yellow-500',
+      editButtonBg: 'bg-blue-500',
+      saveButtonBg: 'bg-green-500',
+      cancelButtonBg: 'bg-gray-400',
+      deleteButtonBg: 'bg-red-500',
+      inputBorder: 'border-gray-300',
+      inputBg: 'bg-white',
+      inputText: 'text-gray-800',
+      inputFocus: 'focus:ring-blue-400',
+      listItemBg: props.todo.status === 'completed' ? 'bg-emerald-50' : 'bg-white',
+      listItemBorder: props.todo.status === 'completed' ? 'border-emerald-200' : 'border-gray-200',
+    },
+    dark: {
+      text: 'text-gray-100',
+      dueDate: 'text-gray-400',
+      completed: 'text-emerald-400',
       completedIcon: 'fas fa-check-circle text-emerald-400',
       pendingIcon: 'fas fa-clock text-yellow-400',
       editButtonBg: 'bg-blue-700',
-      editButtonText: 'text-white',
-      editButtonHover: 'hover:bg-blue-800',
-      editButtonFocus: 'focus:ring-blue-600',
       saveButtonBg: 'bg-green-700',
-      saveButtonText: 'text-white',
-      saveButtonHover: 'hover:bg-green-800',
-      saveButtonFocus: 'focus:ring-green-600',
       cancelButtonBg: 'bg-gray-500',
-      cancelButtonText: 'text-white',
-      cancelButtonHover: 'hover:bg-gray-600',
-      cancelButtonFocus: 'focus:ring-gray-400',
       deleteButtonBg: 'bg-red-700',
-      deleteButtonText: 'text-white',
-      deleteButtonHover: 'hover:bg-red-800',
-      deleteButtonFocus: 'focus:ring-red-600',
       inputBorder: 'border-gray-500',
       inputBg: 'bg-gray-600',
       inputText: 'text-gray-100',
-      inputFocusRing: 'focus:ring-blue-300',
-      priorityBadgeBg: (priority) => darkPriorityBg[priority] || 'bg-gray-600',
-      priorityBadgeText: 'text-white'
-    };
-  } else { // Light, Blue, Green themes
-    const currentThemeColors = {
-        light: {
-            text: 'text-gray-800',
-            dueDate: 'text-gray-500',
-            completed: 'text-emerald-600',
-            completedIcon: 'fas fa-check-circle text-emerald-500',
-            pendingIcon: 'fas fa-clock text-yellow-500',
-            editBtn: 'bg-blue-500', saveBtn: 'bg-green-500', cancelBtn: 'bg-gray-400', deleteBtn: 'bg-red-500',
-            inputBorder: 'border-gray-300', inputBg: 'bg-white', inputText: 'text-gray-800', inputFocus: 'focus:ring-blue-400',
-            listItemBg: props.todo.status === 'completed' ? 'bg-emerald-50' : 'bg-white',
-            listItemBorder: props.todo.status === 'completed' ? 'border-emerald-200' : 'border-gray-200',
-        },
-        blue: {
-            text: 'text-blue-900',
-            dueDate: 'text-blue-600',
-            completed: 'text-blue-700',
-            completedIcon: 'fas fa-check-circle text-blue-600',
-            pendingIcon: 'fas fa-clock text-cyan-500',
-            editBtn: 'bg-indigo-500', saveBtn: 'bg-teal-500', cancelBtn: 'bg-gray-400', deleteBtn: 'bg-red-500',
-            inputBorder: 'border-blue-300', inputBg: 'bg-white', inputText: 'text-blue-900', inputFocus: 'focus:ring-blue-500',
-            listItemBg: props.todo.status === 'completed' ? 'bg-blue-50' : 'bg-white',
-            listItemBorder: props.todo.status === 'completed' ? 'border-blue-200' : 'border-blue-300',
-        },
-        green: {
-            text: 'text-green-900',
-            dueDate: 'text-green-600',
-            completed: 'text-green-700',
-            completedIcon: 'fas fa-check-circle text-green-600',
-            pendingIcon: 'fas fa-clock text-lime-500',
-            editBtn: 'bg-emerald-500', saveBtn: 'bg-lime-500', cancelBtn: 'bg-gray-400', deleteBtn: 'bg-red-500',
-            inputBorder: 'border-green-300', inputBg: 'bg-white', inputText: 'text-green-900', inputFocus: 'focus:ring-green-500',
-            listItemBg: props.todo.status === 'completed' ? 'bg-green-50' : 'bg-white',
-            listItemBorder: props.todo.status === 'completed' ? 'border-green-200' : 'border-green-300',
-        }
-    };
-    const colors = currentThemeColors[props.currentTheme] || currentThemeColors.light; // Fallback
+      inputFocus: 'focus:ring-blue-300',
+      listItemBg: props.todo.status === 'completed' ? 'bg-emerald-900' : 'bg-gray-700',
+      listItemBorder: props.todo.status === 'completed' ? 'border-emerald-700' : 'border-gray-600',
+    },
+    blue: {
+      text: 'text-blue-900',
+      dueDate: 'text-blue-600',
+      completed: 'text-blue-700',
+      completedIcon: 'fas fa-check-circle text-blue-600',
+      pendingIcon: 'fas fa-clock text-cyan-500',
+      editButtonBg: 'bg-indigo-500',
+      saveButtonBg: 'bg-teal-500',
+      cancelButtonBg: 'bg-gray-400',
+      deleteButtonBg: 'bg-red-500',
+      inputBorder: 'border-blue-300',
+      inputBg: 'bg-white',
+      inputText: 'text-blue-900',
+      inputFocus: 'focus:ring-blue-500',
+      listItemBg: props.todo.status === 'completed' ? 'bg-blue-50' : 'bg-white',
+      listItemBorder: props.todo.status === 'completed' ? 'border-blue-200' : 'border-blue-300',
+      saveButtonText: 'text-blue-900', // Override for blue theme
+    },
+    green: {
+      text: 'text-green-900',
+      dueDate: 'text-green-600',
+      completed: 'text-green-700',
+      completedIcon: 'fas fa-check-circle text-green-600',
+      pendingIcon: 'fas fa-clock text-lime-500',
+      editButtonBg: 'bg-emerald-500',
+      saveButtonBg: 'bg-lime-500',
+      cancelButtonBg: 'bg-gray-400',
+      deleteButtonBg: 'bg-red-500',
+      inputBorder: 'border-green-300',
+      inputBg: 'bg-white',
+      inputText: 'text-green-900',
+      inputFocus: 'focus:ring-green-500',
+      listItemBg: props.todo.status === 'completed' ? 'bg-green-50' : 'bg-white',
+      listItemBorder: props.todo.status === 'completed' ? 'border-green-200' : 'border-green-300',
+      saveButtonText: 'text-green-900', // Override for green theme
+      editButtonText: 'text-green-900', // Override for green theme
+    }
+  };
+  const colors = currentThemeColors[props.currentTheme] || currentThemeColors.light; // Fallback
 
-    return {
-      listItemBg: colors.listItemBg,
-      listItemBorder: colors.listItemBorder,
-      listItemHoverShadow: 'hover:shadow-md',
-      taskContentText: colors.text,
-      dueDateText: colors.dueDate,
-      completedAtText: colors.completed,
-      completedIcon: colors.completedIcon,
-      pendingIcon: colors.pendingIcon,
-      editButtonBg: colors.editBtn,
-      editButtonText: 'text-white',
-      editButtonHover: `hover:${colors.editBtn.replace('bg-', 'bg-')}-600`, // Example hover
-      editButtonFocus: `focus:ring-${colors.editBtn.replace('bg-', '')}-400`,
-      saveButtonBg: colors.saveBtn,
-      saveButtonText: 'text-white',
-      saveButtonHover: `hover:${colors.saveBtn.replace('bg-', 'bg-')}-600`,
-      saveButtonFocus: `focus:ring-${colors.saveBtn.replace('bg-', '')}-400`,
-      cancelButtonBg: colors.cancelBtn,
-      cancelButtonText: 'text-white',
-      cancelButtonHover: `hover:${colors.cancelBtn.replace('bg-', 'bg-')}-500`,
-      cancelButtonFocus: `focus:ring-${colors.cancelBtn.replace('bg-', '')}-300`,
-      deleteButtonBg: colors.deleteBtn,
-      deleteButtonText: 'text-white',
-      deleteButtonHover: `hover:${colors.deleteBtn.replace('bg-', 'bg-')}-600`,
-      deleteButtonFocus: `focus:ring-${colors.deleteBtn.replace('bg-', '')}-400`,
-      inputBorder: colors.inputBorder,
-      inputBg: colors.inputBg,
-      inputText: colors.inputText,
-      inputFocusRing: colors.inputFocus,
-      priorityBadgeBg: (priority) => basePriorityBg[priority] || 'bg-gray-200',
-      priorityBadgeText: 'text-gray-800'
-    };
-  }
+  return {
+    listItemBg: colors.listItemBg,
+    listItemBorder: colors.listItemBorder,
+    listItemHoverShadow: 'hover:shadow-md',
+    taskContentText: colors.text,
+    dueDateText: colors.dueDate,
+    completedAtText: colors.completed,
+    completedIcon: colors.completedIcon,
+    pendingIcon: colors.pendingIcon,
+    editButtonBg: colors.editButtonBg,
+    editButtonText: colors.editButtonText || 'text-white', // Use specific text color if defined, else default to white
+    editButtonHover: `hover:${colors.editButtonBg.replace(/-\d{3}/, '-600')}`,
+    editButtonFocus: `focus:ring-${colors.editButtonBg.replace('bg-', '').replace(/-\d{3}/, '-400')}`,
+    saveButtonBg: colors.saveButtonBg,
+    saveButtonText: colors.saveButtonText || 'text-white', // Use specific text color if defined, else default to white
+    saveButtonHover: `hover:${colors.saveButtonBg.replace(/-\d{3}/, '-600')}`,
+    saveButtonFocus: `focus:ring-${colors.saveButtonBg.replace('bg-', '').replace(/-\d{3}/, '-400')}`,
+    cancelButtonBg: colors.cancelButtonBg,
+    cancelButtonText: colors.cancelButtonText || 'text-white', // Use specific text color if defined, else default to white
+    cancelButtonHover: `hover:${colors.cancelButtonBg.replace(/-\d{3}/, '-500')}`,
+    cancelButtonFocus: `focus:ring-${colors.cancelButtonBg.replace('bg-', '').replace(/-\d{3}/, '-300')}`,
+    deleteButtonBg: colors.deleteButtonBg,
+    deleteButtonText: colors.deleteButtonText || 'text-white', // Use specific text color if defined, else default to white
+    deleteButtonHover: `hover:${colors.deleteButtonBg.replace(/-\d{3}/, '-600')}`,
+    deleteButtonFocus: `focus:ring-${colors.deleteButtonBg.replace('bg-', '').replace(/-\d{3}/, '-400')}`,
+    inputBorder: colors.inputBorder,
+    inputBg: colors.inputBg,
+    inputText: colors.inputText,
+    inputFocusRing: colors.inputFocus,
+    priorityBadgeBg: (priority) => basePriorityBg[priority] || 'bg-gray-200',
+    priorityBadgeText: 'text-gray-800'
+  };
 });
 
 /**
