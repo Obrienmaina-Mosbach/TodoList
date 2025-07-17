@@ -12,8 +12,8 @@
       <!-- Header Section -->
       <header class="text-center mb-10">
         <h1 class="text-4xl font-bold text-emerald-600 flex items-center justify-center gap-4">
-          <i class="fas fa-clipboard-list text-pink-500"></i>
-          To-Do List
+          <i class="fas fa-clipboard-list text-blue-500"></i>
+          Brian's To-Do List (Vue.js)
         </h1>
       </header>
 
@@ -23,23 +23,28 @@
           <i class="fas fa-plus-circle text-yellow-500"></i>
           Add New Task
         </h2>
-        <form @submit.prevent="addTodo" class="flex flex-col md:flex-row gap-4">
+        <form @submit.prevent="addTodo" class="flex flex-col md:flex-row gap-4 flex-wrap">
           <input
             type="text"
             v-model="newTaskName"
             placeholder="Task Title"
             required
-            class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200"
+            class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 min-w-[150px]"
           />
           <input
             type="text"
             v-model="newTaskDescription"
             placeholder="Task Description (Optional)"
-            class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200"
+            class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 min-w-[150px]"
+          />
+          <input
+            type="datetime-local"
+            v-model="newTodoDueDate"
+            class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 min-w-[200px]"
           />
           <button
             type="submit"
-            class="px-6 py-3 bg-emerald-600 text-black font-semibold rounded-lg shadow-md hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-opacity-75 transition duration-200 flex items-center justify-center gap-2"
+            class="px-6 py-3 bg-emerald-500 text-black font-semibold rounded-lg shadow-md hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-opacity-75 transition duration-200 flex items-center justify-center gap-2 w-full md:w-auto"
           >
             <i class="fas fa-plus"></i>
             Add Task
@@ -76,14 +81,15 @@ import TodoItem from './components/TodoItem.vue'; // Corrected import path
 
 // Reactive state for the list of todos
 const todos = ref([
-  { id: 1, taskName: 'Learn Vue 3 Basics', taskDescription: 'Understand components, props, and events.', status: 'pending' },
-  { id: 2, taskName: 'Build a To-Do App', taskDescription: 'Apply learned concepts to a practical project.', status: 'completed' },
-  { id: 3, taskName: 'Explore Vue Router', taskDescription: 'Learn how to navigate between different views.', status: 'pending' }
+  { id: 1, taskName: 'Learn Vue 3 Basics', taskDescription: 'Understand components, props, and events.', status: 'pending', dueDate: null },
+  { id: 2, taskName: 'Build a To-Do App', taskDescription: 'Apply learned concepts to a practical project.', status: 'completed', dueDate: new Date('2025-07-20T10:00').toISOString().slice(0, 16) },
+  { id: 3, taskName: 'Explore Vue Router', taskDescription: 'Learn how to navigate between different views.', status: 'pending', dueDate: new Date('2025-07-25T14:30').toISOString().slice(0, 16) }
 ]);
 
 // Reactive state for new task input fields
 const newTaskName = ref('');
 const newTaskDescription = ref('');
+const newTodoDueDate = ref(''); // New ref for due date
 let nextId = todos.value.length > 0 ? Math.max(...todos.value.map(t => t.id)) + 1 : 1;
 
 /**
@@ -102,6 +108,8 @@ const addTodo = () => {
     id: nextId++, // Assign a unique ID
     taskName: newTaskName.value.trim(),
     taskDescription: newTaskDescription.value.trim(),
+    // Store dueDate as null if empty, or as a string from datetime-local input
+    dueDate: newTodoDueDate.value || null,
     status: 'pending' // New tasks are always pending
   };
 
@@ -111,6 +119,7 @@ const addTodo = () => {
   // Clear the input fields
   newTaskName.value = '';
   newTaskDescription.value = '';
+  newTodoDueDate.value = ''; // Clear due date input
 };
 
 /**
@@ -148,11 +157,8 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  /* Ensure the body is transparent to see the video */
-  background-color: transparent;
+  background-color: transparent; /* Ensure the body is transparent to see the video */
 }
-
-
 
 /* Video background styles */
 .background-video {
