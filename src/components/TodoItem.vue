@@ -13,6 +13,7 @@
         :checked="todo.status === 'completed'"
         @change="$emit('toggle-done', todo.id)"
         class="form-checkbox h-5 w-5 text-blue-600 rounded-md transition duration-150 ease-in-out cursor-pointer mr-3 mt-1 md:mt-0"
+        style="display: block; opacity: 1; visibility: visible;"
       />
       
       <!-- Task Content -->
