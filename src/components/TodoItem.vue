@@ -1,3 +1,4 @@
+<!-- TodoItem.vue -->
 <template>
   <li
     :class="[
@@ -7,7 +8,7 @@
   >
     <div class="flex items-start md:items-center flex-grow mb-3 md:mb-0">
       <!-- Checkbox to toggle status -->
-      <inputs
+      <input
         type="checkbox"
         :checked="todo.status === 'completed'"
         @change="$emit('toggle-done', todo.id)"
@@ -18,6 +19,9 @@
       <div :class="['flex flex-col', { 'line-through text-gray-500': todo.status === 'completed' }]">
         <span class="font-semibold text-lg">{{ todo.taskName }}</span>
         <span v-if="todo.taskDescription" class="text-sm text-gray-600 mt-1">{{ todo.taskDescription }}</span>
+        <span v-if="todo.dueDate" class="text-xs text-gray-400 mt-1 flex items-center gap-1">
+          <i class="fas fa-calendar-alt"></i> Due: {{ formatDueDate(todo.dueDate) }}
+        </span>
       </div>
     </div>
 
@@ -47,7 +51,7 @@
 import { defineProps, defineEmits } from 'vue';
 
 // Define the props this component expects
-defineProps({
+const props = defineProps({
   todo: {
     type: Object,
     required: true,
@@ -60,14 +64,36 @@ defineProps({
 
 // Define the custom events this component can emit
 defineEmits(['toggle-done', 'delete-todo']);
+
+/**
+ * Formats a date string into a more readable format.
+ * @param {string} dateString - The date string from datetime-local input.
+ * @returns {string} Formatted date string.
+ */
+const formatDueDate = (dateString) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  // Check if the date is valid
+  if (isNaN(date.getTime())) {
+    return dateString; // Return original if invalid date
+  }
+  const options = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  };
+  return date.toLocaleString(undefined, options);
+};
 </script>
 
 <style scoped>
-
-
+/* Scoped styles for TodoItem.vue */
+/* Custom checkbox styling if needed, but Tailwind's form-checkbox is good */
 .form-checkbox:checked {
   border-color: transparent;
-  background-color: #3b82f6; 
+  background-color: #3b82f6; /* Tailwind blue-600 */
   background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 00-1.414 0L7 8.586 4.207 5.793a1 1 0 00-1.414 1.414l3.5 3.5a1 1 0 001.414 0l5-5a1 1 0 000-1.414z'/%3e%3c/svg%3e");
 }
 </style>
