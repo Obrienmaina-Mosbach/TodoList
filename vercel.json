@@ -8,18 +8,13 @@
     },
     {
       "src": "server/api/index.js",
-      "use": "@vercel/node",
-      "config": { "includeFiles": ["server/**"] }
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "server/api/index.js"
-    },
-    {
-      "src": "/(.*\\..*)",
-      "dest": "/$1"
+      "dest": "/api"
     },
     {
       "src": "/(.*)",
