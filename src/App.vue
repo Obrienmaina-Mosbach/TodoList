@@ -13,7 +13,7 @@
       <header class="text-center mb-10">
         <h1 class="text-4xl font-bold text-emerald-600 flex items-center justify-center gap-4">
           <i class="fas fa-clipboard-list text-blue-500"></i>
-          Brian's To-Do List (Vue.js)
+          O'brien'S To-Do List
         </h1>
       </header>
 
