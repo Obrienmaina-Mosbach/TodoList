@@ -26,17 +26,12 @@ const createExpressApp = () => {
     allowedHeaders: ['Content-Type', 'Authorization']
   }));
 
-  // --- CRITICAL CHANGE FOR SERVERLESS ---
-  // If running in a serverless environment, mount the API routes under /api
-  // This handles cases where serverless-http might pass the full path.
-  // Vercel's default behavior for functions at /api is often to strip /api,
-  // but explicitly mounting it here ensures consistency.
-  if (process.env.VERCEL) { // Vercel sets this environment variable
-    app.use('/api/todos', todoRoutes); // Explicitly mount /api/todos for Vercel
-  } else {
-    app.use('/todos', todoRoutes); // For local development
-  }
-  // --- END CRITICAL CHANGE ---
+  // --- SIMPLIFIED ROUTING FOR SERVERLESS ---
+  // Mount todoRoutes at the root of the Express app.
+  // Vercel's vercel.json will handle routing /api/todos to this function,
+  // and serverless-http will ensure the Express app receives /todos.
+  app.use('/todos', todoRoutes); 
+  // --- END SIMPLIFIED ROUTING ---
 
   return app;
 };
