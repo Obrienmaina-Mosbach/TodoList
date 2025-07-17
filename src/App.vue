@@ -497,7 +497,8 @@ const updateTodoDetails = async (updatedTodo) => {
       taskDescription: updatedTodo.taskDescription
     });
     todos.value[todoIndex] = response.data; // Update local todo with response data
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error updating todo details:', error);
     alert('Failed to update task details.');
   }
