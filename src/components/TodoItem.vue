@@ -3,7 +3,9 @@
   <li
     :class="[
       'flex flex-col md:flex-row items-start md:items-center justify-between p-4 rounded-lg shadow-sm transition-all duration-300 ease-in-out',
-      todo.status === 'completed' ? 'bg-emerald-50 border border-emerald-200' : 'bg-white border border-gray-200 hover:shadow-md'
+      themeClasses.listItemBg,
+      themeClasses.listItemBorder,
+      themeClasses.listItemHoverShadow
     ]"
   >
     <div class="flex items-start md:items-center flex-grow mb-3 md:mb-0">
@@ -17,29 +19,29 @@
       />
       
       <!-- Task Content -->
-      <div :class="['flex flex-col flex-grow', { 'line-through text-gray-500': todo.status === 'completed' }]">
+      <div :class="['flex flex-col flex-grow', themeClasses.taskContentText, { 'line-through': todo.status === 'completed' }]">
         <template v-if="!isEditing">
           <span class="font-semibold text-lg">{{ todo.taskName }}</span>
-          <span v-if="todo.taskDescription" class="text-sm text-gray-600 mt-1">{{ todo.taskDescription }}</span>
+          <span v-if="todo.taskDescription" class="text-sm mt-1">{{ todo.taskDescription }}</span>
         </template>
         <template v-else>
           <input
             type="text"
             v-model="editedTaskName"
-            class="p-1 border border-gray-300 rounded-md text-lg font-semibold mb-1 focus:outline-none focus:ring-1 focus:ring-blue-400"
+            :class="['p-1 border rounded-md text-lg font-semibold mb-1 focus:outline-none focus:ring-1', themeClasses.inputBorder, themeClasses.inputBg, themeClasses.inputText, themeClasses.inputFocusRing]"
           />
           <input
             type="text"
             v-model="editedTaskDescription"
             placeholder="Description (Optional)"
-            class="p-1 border border-gray-300 rounded-md text-sm text-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400"
+            :class="['p-1 border rounded-md text-sm mt-1 focus:outline-none focus:ring-1', themeClasses.inputBorder, themeClasses.inputBg, themeClasses.inputText, themeClasses.inputFocusRing]"
           />
         </template>
 
-        <span v-if="todo.dueDate" class="text-xs text-gray-400 mt-1 flex items-center gap-1">
+        <span v-if="todo.dueDate" :class="['text-xs mt-1 flex items-center gap-1', themeClasses.dueDateText]">
           <i class="fas fa-calendar-alt"></i> Due: {{ formatDueDate(todo.dueDate) }}
         </span>
-        <span v-if="todo.status === 'completed' && todo.completedAt" class="text-xs text-emerald-500 mt-1 flex items-center gap-1">
+        <span v-if="todo.status === 'completed' && todo.completedAt" :class="['text-xs mt-1 flex items-center gap-1', themeClasses.completedAtText]">
           <i class="fas fa-calendar-check"></i> Completed: {{ formatCompletionDate(todo.completedAt) }}
         </span>
       </div>
@@ -51,7 +53,7 @@
       <i
         :class="[
           'text-xl',
-          todo.status === 'completed' ? 'fas fa-check-circle text-emerald-500' : 'fas fa-clock text-yellow-500'
+          todo.status === 'completed' ? themeClasses.completedIcon : themeClasses.pendingIcon
         ]"
       ></i>
 
@@ -59,7 +61,7 @@
       <template v-if="!isEditing">
         <button
           @click="startEditing"
-          class="px-3 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-200 flex items-center gap-2 text-sm"
+          :class="['px-3 py-2 font-semibold rounded-lg shadow-sm transition duration-200 flex items-center gap-2 text-sm', themeClasses.editButtonBg, themeClasses.editButtonText, themeClasses.editButtonHover, themeClasses.editButtonFocus]"
         >
           <i class="fas fa-edit"></i> Edit
         </button>
@@ -67,13 +69,13 @@
       <template v-else>
         <button
           @click="saveChanges"
-          class="px-3 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transition duration-200 flex items-center gap-2 text-sm"
+          :class="['px-3 py-2 font-semibold rounded-lg shadow-sm transition duration-200 flex items-center gap-2 text-sm', themeClasses.saveButtonBg, themeClasses.saveButtonText, themeClasses.saveButtonHover, themeClasses.saveButtonFocus]"
         >
           <i class="fas fa-save"></i> Save
         </button>
         <button
           @click="cancelEditing"
-          class="px-3 py-2 bg-gray-400 text-white font-semibold rounded-lg shadow-sm hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-75 transition duration-200 flex items-center gap-2 text-sm"
+          :class="['px-3 py-2 font-semibold rounded-lg shadow-sm transition duration-200 flex items-center gap-2 text-sm', themeClasses.cancelButtonBg, themeClasses.cancelButtonText, themeClasses.cancelButtonHover, themeClasses.cancelButtonFocus]"
         >
           <i class="fas fa-times"></i> Cancel
         </button>
@@ -82,7 +84,7 @@
       <!-- Delete Button -->
       <button
         @click="$emit('delete-todo', todo.id)"
-        class="px-3 py-2 bg-red-500 text-white font-semibold rounded-lg shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75 transition duration-200 flex items-center gap-2 text-sm"
+        :class="['px-3 py-2 font-semibold rounded-lg shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75 transition duration-200 flex items-center gap-2 text-sm', themeClasses.deleteButtonBg, themeClasses.deleteButtonText, themeClasses.deleteButtonHover, themeClasses.deleteButtonFocus]"
       >
         <i class="fas fa-trash-alt"></i> Delete
       </button>
@@ -91,7 +93,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits, watch } from 'vue';
+import { ref, defineProps, defineEmits, watch, computed } from 'vue'; // Added 'computed'
 
 // Define the props this component expects
 const props = defineProps({
@@ -102,11 +104,15 @@ const props = defineProps({
       // Basic validation for the todo object structure
       return 'id' in value && 'taskName' in value && 'status' in value;
     }
+  },
+  currentTheme: { // Added currentTheme prop
+    type: String,
+    required: true
   }
 });
 
 // Define the custom events this component can emit
-const emit = defineEmits(['toggle-done', 'delete-todo', 'update-todo']); // Added 'update-todo' event
+const emit = defineEmits(['toggle-done', 'delete-todo', 'update-todo']);
 
 // Reactive state for editing mode
 const isEditing = ref(false);
@@ -117,14 +123,80 @@ const editedTaskDescription = ref('');
 watch(() => props.todo, (newTodo) => {
   editedTaskName.value = newTodo.taskName;
   editedTaskDescription.value = newTodo.taskDescription;
-}, { immediate: true }); // immediate: true runs the watcher immediately on component mount
+}, { immediate: true });
+
+// Computed property to define theme-specific classes for TodoItem
+const themeClasses = computed(() => {
+  if (props.currentTheme === 'dark') {
+    return {
+      listItemBg: props.todo.status === 'completed' ? 'bg-emerald-900' : 'bg-gray-700',
+      listItemBorder: props.todo.status === 'completed' ? 'border-emerald-700' : 'border-gray-600',
+      listItemHoverShadow: 'hover:shadow-lg', // Darker shadow for dark mode
+      taskContentText: 'text-gray-100',
+      dueDateText: 'text-gray-400',
+      completedAtText: 'text-emerald-400',
+      completedIcon: 'fas fa-check-circle text-emerald-400',
+      pendingIcon: 'fas fa-clock text-yellow-400',
+      editButtonBg: 'bg-blue-700',
+      editButtonText: 'text-white',
+      editButtonHover: 'hover:bg-blue-800',
+      editButtonFocus: 'focus:ring-blue-600',
+      saveButtonBg: 'bg-green-700',
+      saveButtonText: 'text-white',
+      saveButtonHover: 'hover:bg-green-800',
+      saveButtonFocus: 'focus:ring-green-600',
+      cancelButtonBg: 'bg-gray-500',
+      cancelButtonText: 'text-white',
+      cancelButtonHover: 'hover:bg-gray-600',
+      cancelButtonFocus: 'focus:ring-gray-400',
+      deleteButtonBg: 'bg-red-700',
+      deleteButtonText: 'text-white',
+      deleteButtonHover: 'hover:bg-red-800',
+      deleteButtonFocus: 'focus:ring-red-600',
+      inputBorder: 'border-gray-500',
+      inputBg: 'bg-gray-600',
+      inputText: 'text-gray-100',
+      inputFocusRing: 'focus:ring-blue-300'
+    };
+  } else { // Light theme
+    return {
+      listItemBg: props.todo.status === 'completed' ? 'bg-emerald-50' : 'bg-white',
+      listItemBorder: props.todo.status === 'completed' ? 'border-emerald-200' : 'border-gray-200',
+      listItemHoverShadow: 'hover:shadow-md',
+      taskContentText: 'text-gray-800',
+      dueDateText: 'text-gray-500',
+      completedAtText: 'text-emerald-600',
+      completedIcon: 'fas fa-check-circle text-emerald-500',
+      pendingIcon: 'fas fa-clock text-yellow-500',
+      editButtonBg: 'bg-blue-500',
+      editButtonText: 'text-white',
+      editButtonHover: 'hover:bg-blue-600',
+      editButtonFocus: 'focus:ring-blue-400',
+      saveButtonBg: 'bg-green-500',
+      saveButtonText: 'text-white',
+      saveButtonHover: 'hover:bg-green-600',
+      saveButtonFocus: 'focus:ring-green-400',
+      cancelButtonBg: 'bg-gray-400',
+      cancelButtonText: 'text-white',
+      cancelButtonHover: 'hover:bg-gray-500',
+      cancelButtonFocus: 'focus:ring-gray-300',
+      deleteButtonBg: 'bg-red-500',
+      deleteButtonText: 'text-white',
+      deleteButtonHover: 'hover:bg-red-600',
+      deleteButtonFocus: 'focus:ring-red-400',
+      inputBorder: 'border-gray-300',
+      inputBg: 'bg-white',
+      inputText: 'text-gray-800',
+      inputFocusRing: 'focus:ring-blue-400'
+    };
+  }
+});
 
 /**
  * Initiates the editing mode.
  */
 const startEditing = () => {
   isEditing.value = true;
-  // Initialize edited values with current todo values
   editedTaskName.value = props.todo.taskName;
   editedTaskDescription.value = props.todo.taskDescription;
 };
@@ -134,7 +206,7 @@ const startEditing = () => {
  */
 const saveChanges = () => {
   if (editedTaskName.value.trim() === '') {
-    alert('Task name cannot be empty!'); // Basic client-side validation
+    alert('Task name cannot be empty!');
     return;
   }
   emit('update-todo', {
@@ -142,7 +214,7 @@ const saveChanges = () => {
     taskName: editedTaskName.value.trim(),
     taskDescription: editedTaskDescription.value.trim()
   });
-  isEditing.value = false; // Exit editing mode
+  isEditing.value = false;
 };
 
 /**
@@ -150,7 +222,6 @@ const saveChanges = () => {
  */
 const cancelEditing = () => {
   isEditing.value = false;
-  // Revert edited values to original todo values
   editedTaskName.value = props.todo.taskName;
   editedTaskDescription.value = props.todo.taskDescription;
 };
@@ -163,9 +234,8 @@ const cancelEditing = () => {
 const formatDueDate = (dateString) => {
   if (!dateString) return '';
   const date = new Date(dateString);
-  // Check if the date is valid
   if (isNaN(date.getTime())) {
-    return dateString; // Return original if invalid date
+    return dateString;
   }
   const options = {
     year: 'numeric',
@@ -186,7 +256,7 @@ const formatCompletionDate = (dateString) => {
   if (!dateString) return '';
   const date = new Date(dateString);
   if (isNaN(date.getTime())) {
-    return dateString; // Return original if invalid date
+    return dateString;
   }
   const options = {
     year: 'numeric',
