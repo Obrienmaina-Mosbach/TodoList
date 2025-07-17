@@ -39,7 +39,7 @@
           />
           <button
             type="submit"
-            class="px-6 py-3 bg-emerald-500 text-white font-semibold rounded-lg shadow-md hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-opacity-75 transition duration-200 flex items-center justify-center gap-2"
+            class="px-6 py-3 bg-emerald-500 text-black font-semibold rounded-lg shadow-md hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-opacity-75 transition duration-200 flex items-center justify-center gap-2"
           >
             <i class="fas fa-plus"></i>
             Add Task
