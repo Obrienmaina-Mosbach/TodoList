@@ -152,7 +152,8 @@ import TodoItem from './components/TodoItem.vue';
 import axios from 'axios';
 
 // --- API Base URL ---
-const API_BASE_URL = '/api/todos'; // IMPORTANT: This must be '/api/todos' for deployment!
+// Use environment variable for API_BASE_URL
+const API_BASE_URL = process.env.VUE_APP_API_BASE_URL;
 
 // --- Reactive State for Todos and Inputs ---
 const todos = ref([]);
