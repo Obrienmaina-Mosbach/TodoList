@@ -20,18 +20,23 @@ const createExpressApp = () => {
   app.use(express.urlencoded({ extended: false })); // Body parser for URL-encoded data
 
   // Enable CORS for all origins (for development and Vercel)
-  // For Vercel, you'll need to specify your frontend's deployed domain.
-  // During development, 'http://localhost:8080' is needed.
-  // Vercel often proxies /api calls, so this might be less critical if frontend and backend are in the same Vercel project.
   app.use(cors({
     origin: process.env.NODE_ENV === 'production' ? 'https://<YOUR_VERCEL_FRONTEND_DOMAIN>' : 'http://localhost:8080',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
   }));
 
-  // Mount routes
-  // Routes should start from /todos, as Vercel will route /api/* to this function.
-  app.use('/todos', todoRoutes);
+  // --- CRITICAL CHANGE FOR SERVERLESS ---
+  // If running in a serverless environment, mount the API routes under /api
+  // This handles cases where serverless-http might pass the full path.
+  // Vercel's default behavior for functions at /api is often to strip /api,
+  // but explicitly mounting it here ensures consistency.
+  if (process.env.VERCEL) { // Vercel sets this environment variable
+    app.use('/api/todos', todoRoutes); // Explicitly mount /api/todos for Vercel
+  } else {
+    app.use('/todos', todoRoutes); // For local development
+  }
+  // --- END CRITICAL CHANGE ---
 
   return app;
 };
