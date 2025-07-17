@@ -1,6 +1,6 @@
 # Vue.js To-Do List Application
 
-This is a simple To-Do list application built with Vue.js 3, demonstrating component-based architecture, props, and custom events for communication between parent and child components.
+This is a To-Do list application built with Vue.js 3, demonstrating component-based architecture, props, and custom events for communication between parent and child components.
 
 **Note:** This is a client-side application. All To-Do items are stored in the browser's memory and will be reset upon refreshing the page. It does not connect to a backend database like MongoDB.
 
@@ -16,17 +16,19 @@ This is a simple To-Do list application built with Vue.js 3, demonstrating compo
 ## Project Structure
 
 
+```
 vue-todo-list/
-├── public/
-│   └── index.html         # Main HTML file where the Vue app is mounted
-├── src/
-│   ├── assets/            # (Optional) For static assets like images
-│   ├── components/        # Reusable Vue components
-│   │   └── TodoItem.vue   # Component for individual To-Do items
-│   ├── App.vue            # Main application component
-│   └── main.js            # Vue application entry point
-├── package.json           # Project dependencies and scripts
-└── README.md              # This file
+                ├── public/
+                    └── index.html        
+                ├── src/
+                   ├── assets/           
+                   ├── components/        
+                      └── TodoItem.vue   
+                   ├── App.vue            
+                   └── main.js            
+                ├── package.json           
+                └── README.md              
+```
 
 
 ## Setup and Running the Project
@@ -56,16 +58,6 @@ To run this project locally, you need to have Node.js and npm (or Yarn) installe
 
     Your To-Do list application should now be accessible in your web browser.
 
-4.  **Build for Production (Optional):**
-    To create a production-ready build of your application, run:
-
-    ```bash
-    npm run build
-    # OR
-    yarn build
-    ```
-
-    This will generate a `dist/` folder containing the optimized static files for deployment.
 
 ## Technologies Used
 
@@ -83,4 +75,4 @@ To run this project locally, you need to have Node.js and npm (or Yarn) installe
     * `TodoItem.vue` emits custom events (`toggle-done` and `delete-todo`) when a user interacts with the checkbox or delete button.
     * `App.vue` listens for these events and executes corresponding methods (`toggleTodoStatus` and `deleteTodo`) to update its `todos` data array.
 
-This pattern ensures a clear and manageable flow of data and actions within the application.
+
