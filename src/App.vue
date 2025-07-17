@@ -306,11 +306,25 @@ let reminderInterval = null;
 const fetchTodos = async () => {
   try {
     const response = await axios.get(API_BASE_URL);
-    todos.value = response.data;
-    console.log('Todos fetched from backend:', todos.value);
+    // Ensure response.data is an array. If not, default to an empty array.
+    if (Array.isArray(response.data)) {
+      todos.value = response.data;
+      console.log('Todos fetched from backend:', todos.value);
+    } else {
+      console.warn('API returned non-array data for todos. Response:', response.data);
+      todos.value = []; // Ensure it remains an array even if API sends unexpected data
+      alert('Failed to load tasks: Unexpected data format from server.');
+    }
   } catch (error) {
-    console.error('Error fetching todos:', error);
-    alert('Failed to load tasks. Please check the server connection.');
+    console.error('Error fetching todos:', error.response ? error.response.data : error.message);
+    todos.value = []; // Ensure todos remains an array on error
+    if (error.response) {
+      alert(`Failed to load tasks. Server responded with status ${error.response.status}: ${error.response.data.message || error.response.statusText}`);
+    } else if (error.request) {
+      alert('Failed to load tasks: No response from server. Check network or API URL.');
+    } else {
+      alert('Failed to load tasks: Request setup error. Check console for details.');
+    }
   }
 };
 
@@ -420,8 +434,14 @@ const addTodo = async () => {
     newTodoDueDate.value = '';
     newTodoPriority.value = 'Medium';
   } catch (error) {
-    console.error('Error adding todo:', error);
-    alert('Failed to add task.');
+    console.error('Error adding todo:', error.response ? error.response.data : error.message);
+    if (error.response) {
+      alert(`Failed to add task. Server responded with status ${error.response.status}: ${error.response.data.message || error.response.statusText}`);
+    } else if (error.request) {
+      alert('Failed to add task: No response from server. Check network or API URL.');
+    } else {
+      alert('Failed to add task: Request setup error. Check console for details.');
+    }
   }
 };
 
@@ -448,8 +468,14 @@ const toggleTodoStatus = async (id) => {
       remindedTaskIds.value.delete(id); // Allow reminder again if marked undone
     }
   } catch (error) {
-    console.error('Error toggling todo status:', error);
-    alert('Failed to update task status.');
+    console.error('Error toggling todo status:', error.response ? error.response.data : error.message);
+    if (error.response) {
+      alert(`Failed to update task status. Server responded with status ${error.response.status}: ${error.response.data.message || error.response.statusText}`);
+    } else if (error.request) {
+      alert('Failed to update task status: No response from server. Check network or API URL.');
+    } else {
+      alert('Failed to update task status: Request setup error. Check console for details.');
+    }
   }
 };
 
@@ -463,8 +489,14 @@ const deleteTodo = async (id) => {
     todos.value = todos.value.filter(t => t._id !== id);
     remindedTaskIds.value.delete(id); // Remove from reminded set if deleted
   } catch (error) {
-    console.error('Error deleting todo:', error);
-    alert('Failed to delete task.');
+    console.error('Error deleting todo:', error.response ? error.response.data : error.message);
+    if (error.response) {
+      alert(`Failed to delete task. Server responded with status ${error.response.status}: ${error.response.data.message || error.response.statusText}`);
+    } else if (error.request) {
+      alert('Failed to delete task: No response from server. Check network or API URL.');
+    } else {
+      alert('Failed to delete task: Request setup error. Check console for details.');
+    }
   }
 };
 
@@ -478,8 +510,14 @@ const clearCompletedTodos = async () => {
     // Clear relevant IDs from remindedTaskIds
     remindedTaskIds.value = new Set([...remindedTaskIds.value].filter(id => todos.value.some(todo => todo._id === id)));
   } catch (error) {
-    console.error('Error clearing completed todos:', error);
-    alert('Failed to clear completed tasks.');
+    console.error('Error clearing completed todos:', error.response ? error.response.data : error.message);
+    if (error.response) {
+      alert(`Failed to clear completed tasks. Server responded with status ${error.response.status}: ${error.response.data.message || error.response.statusText}`);
+    } else if (error.request) {
+      alert('Failed to clear completed tasks: No response from server. Check network or API URL.');
+    } else {
+      alert('Failed to clear completed tasks: Request setup error. Check console for details.');
+    }
   }
 };
 
@@ -499,8 +537,14 @@ const updateTodoDetails = async (updatedTodo) => {
     todos.value[todoIndex] = response.data; // Update local todo with response data
   }
   catch (error) {
-    console.error('Error updating todo details:', error);
-    alert('Failed to update task details.');
+    console.error('Error updating todo details:', error.response ? error.response.data : error.message);
+    if (error.response) {
+      alert(`Failed to update task details. Server responded with status ${error.response.status}: ${error.response.data.message || error.response.statusText}`);
+    } else if (error.request) {
+      alert('Failed to update task details: No response from server. Check network or API URL.');
+    } else {
+      alert('Failed to update task details: Request setup error. Check console for details.');
+    }
   }
 };
 
@@ -518,8 +562,14 @@ const updateTodoPriority = async (payload) => {
     });
     todos.value[todoIndex] = response.data; // Update local todo with response data
   } catch (error) {
-    console.error('Error updating todo priority:', error);
-    alert('Failed to update task priority.');
+    console.error('Error updating todo priority:', error.response ? error.response.data : error.message);
+    if (error.response) {
+      alert(`Failed to update task priority. Server responded with status ${error.response.status}: ${error.response.data.message || error.response.statusText}`);
+    } else if (error.request) {
+      alert('Failed to update task priority: No response from server. Check network or API URL.');
+    } else {
+      alert('Failed to update task priority: Request setup error. Check console for details.');
+    }
   }
 };
 </script>
