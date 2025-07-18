@@ -20,9 +20,7 @@ const createExpressApp = () => {
   // Enable CORS for specific origins (recommended for production)
   // Replace <YOUR_VERCEL_FRONTEND_DOMAIN> with your actual Vercel frontend domain.
   app.use(cors({
-    origin: process.env.NODE_ENV === 'production'
-      ? 'https://todo-list-obrienmaina-mosbachs-projects.vercel.app' // Ensure no trailing slash here
-      : 'http://localhost:8080',
+    origin: '*', // TEMPORARY: Allow all origins for debugging CORS
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
   }));
