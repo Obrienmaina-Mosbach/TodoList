@@ -2,72 +2,101 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const connectDB = require('./config/db'); // Import the connectDB function
+const connectDB = require('./config/db');
 const todoRoutes = require('./routes/todoRoutes');
 
 // Load env vars for local development
 dotenv.config({ path: './.env' });
 
 // Function to create and configure the Express app
-// This function will now handle the database connection internally
 const createExpressApp = () => {
-  console.log('createExpressApp: Starting Express app creation.'); // Log for debugging
+  console.log('createExpressApp: Starting Express app creation.');
   const app = express();
 
   // Middleware
-  app.use(express.json()); // Body parser for raw JSON
-  app.use(express.urlencoded({ extended: false })); // Body parser for URL-encoded data
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
 
-// Define the allowed origin (update with your frontend URL)
-const allowedOrigins = [
-  'https://todo-list-nine-vert-88.vercel.app',
-  'https://todo-list-git-main-obrienmaina-mosbachs-projects.vercel.app',
-  process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : null
-].filter(Boolean);
+  // Add request timeout middleware (10 seconds)
+  app.use((req, res, next) => {
+    res.setTimeout(10000, () => {
+      console.error('Request timeout occurred');
+      res.status(504).json({ message: 'Request timeout' });
+    });
+    next();
+  });
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true // Include if you need to send cookies or auth headers
-}));
+  // Define the allowed origins
+  const allowedOrigins = [
+    'https://todo-list-nine-vert-88.vercel.app',
+    'https://todo-list-git-main-obrienmaina-mosbachs-projects.vercel.app',
+    process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : null
+  ].filter(Boolean);
+
+  app.use(cors({
+    origin: function (origin, callback) {
+      // Log the origin for debugging
+      console.log('Request origin:', origin);
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.log('CORS blocked origin:', origin);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  }));
+
+  // Add error handling middleware
+  app.use((err, req, res, next) => {
+    console.error('Global error handler:', err);
+    res.status(500).json({ 
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+  });
 
   // Mount routes
   app.use('/api/todos', todoRoutes);
-  console.log('createExpressApp: Express app created and routes mounted.'); // Log for debugging
+  console.log('createExpressApp: Express app created and routes mounted.');
   return app;
 };
 
-// Export an async function that connects to DB and then returns the Express app
-// This ensures DB connection is established before the app starts processing requests.
-// This is crucial for serverless functions.
+// Cache with timeout
 let cachedApp = null;
 let cachedDbConnection = null;
+let lastConnectionTime = null;
+const CACHE_TIMEOUT = 300000; // 5 minutes
 
 module.exports = async () => {
-  if (cachedApp && cachedDbConnection) {
+  const now = Date.now();
+  
+  // Check if cache is still valid
+  if (cachedApp && cachedDbConnection && lastConnectionTime && (now - lastConnectionTime < CACHE_TIMEOUT)) {
     console.log('Using cached app and DB connection.');
     return cachedApp;
   }
 
   try {
-    console.log('Server.js module.exports: Cold start path initiated.'); // Log for debugging
-    cachedDbConnection = await connectDB(); // Connect to DB and cache the connection
-    console.log('Server.js module.exports: DB connection established.'); // Log for debugging
-    cachedApp = createExpressApp(); // Create the Express app
-    console.log('Server.js module.exports: Express app instance created.'); // Log for debugging
+    console.log('Server.js: Cold start path initiated.');
+    
+    // Set timeout for MongoDB connection
+    const connectionPromise = connectDB();
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('DB Connection timeout')), 5000)
+    );
+    
+    cachedDbConnection = await Promise.race([connectionPromise, timeoutPromise]);
+    lastConnectionTime = Date.now();
+    
+    console.log('Server.js: DB connection established.');
+    cachedApp = createExpressApp();
+    console.log('Server.js: Express app instance created.');
     return cachedApp;
   } catch (error) {
-    console.error('Server.js module.exports: Failed to initialize Express app or connect to DB:', error);
-    console.error('Server.js module.exports: Full error details:', error); // Log full error
-    // In a serverless environment, re-throw or handle error gracefully
-    // instead of process.exit(1) which might not log effectively.
+    console.error('Server.js: Initialization error:', error);
     throw error;
   }
 };
