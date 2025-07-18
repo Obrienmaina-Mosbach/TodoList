@@ -18,14 +18,21 @@ const createExpressApp = () => {
   app.use(express.json()); // Body parser for raw JSON
   app.use(express.urlencoded({ extended: false })); // Body parser for URL-encoded data
 
-  // Enable CORS for specific origins (recommended for production)
-  app.use(cors({
-    origin: process.env.NODE_ENV === 'production'
-      ? 'https://todo-list-git-main-obrienmaina-mosbachs-projects.vercel.app' // UPDATED TO YOUR NEW FRONTEND URL
-      : 'http://localhost:8080',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-  }));
+// Define the allowed origin (update with your frontend URL)
+const allowedOrigins = ['https://todo-list-nine-vert-88.vercel.app'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true // Include if you need to send cookies or auth headers
+}));
 
   // Mount routes
   app.use('/api/todos', todoRoutes);
