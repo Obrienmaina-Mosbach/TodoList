@@ -21,7 +21,7 @@ const createExpressApp = () => {
   // Enable CORS for specific origins (recommended for production)
   app.use(cors({
     origin: process.env.NODE_ENV === 'production'
-      ? 'https://todo-list-nine-vert-88.vercel.app' // UPDATED TO YOUR NEW FRONTEND URL
+      ? 'https://todo-list-git-main-obrienmaina-mosbachs-projects.vercel.app' // UPDATED TO YOUR NEW FRONTEND URL
       : 'http://localhost:8080',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
