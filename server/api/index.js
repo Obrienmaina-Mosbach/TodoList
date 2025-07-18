@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
     return cachedServerlessHandler(req, res);
   } catch (error) {
     console.error('Failed to initialize serverless function:', error);
-    // Respond with a 500 error if it initialization fails
+    // Respond with a 500 error if initialization fails
     res.statusCode = 500;
     res.setHeader('Content-Type', 'text/plain');
     res.end('Internal Server Error: Could not initialize application.');
