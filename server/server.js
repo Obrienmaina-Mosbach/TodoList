@@ -17,25 +17,7 @@ const createExpressApp = () => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
 
-  // Add timeout middleware using a different approach
-  app.use((req, res, next) => {
-    const timeout = 10000; // 10 seconds
-    const timeoutHandler = setTimeout(() => {
-      if (!res.headersSent) {
-        console.error('Request timeout occurred');
-        res.status(504).json({ message: 'Request timeout' });
-      }
-    }, timeout);
-
-    // Clear the timeout when the response is sent
-    res.on('finish', () => {
-      clearTimeout(timeoutHandler);
-    });
-
-    next();
-  });
-
-  // Rest of your existing middleware and routes...
+  // Define the allowed origins
   const allowedOrigins = [
     'https://todo-list-nine-vert-88.vercel.app',
     'https://todo-list-git-main-obrienmaina-mosbachs-projects.vercel.app',
@@ -61,10 +43,18 @@ const createExpressApp = () => {
   // Add error handling middleware
   app.use((err, req, res, next) => {
     console.error('Global error handler:', err);
-    res.status(500).json({ 
-      message: 'Internal server error',
-      error: process.env.NODE_ENV === 'development' ? err.message : undefined
-    });
+    // Send appropriate status codes based on error type
+    if (err.name === 'MongooseError' || err.name === 'MongoError') {
+      res.status(503).json({
+        message: 'Database service unavailable',
+        error: process.env.NODE_ENV === 'development' ? err.message : undefined
+      });
+    } else {
+      res.status(500).json({ 
+        message: 'Internal server error',
+        error: process.env.NODE_ENV === 'development' ? err.message : undefined
+      });
+    }
   });
 
   // Mount routes
@@ -106,6 +96,10 @@ module.exports = async () => {
     return cachedApp;
   } catch (error) {
     console.error('Server.js: Initialization error:', error);
+    // Add specific error handling for connection timeouts
+    if (error.message === 'DB Connection timeout') {
+      throw new Error('Database connection timed out. Please try again.');
+    }
     throw error;
   }
 };
