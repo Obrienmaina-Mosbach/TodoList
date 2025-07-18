@@ -25,5 +25,10 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ]
+  ],
+  "functions": {
+    "server/api/index.js": {
+      "regions": ["fra1"]
+    }
+  }
 }
