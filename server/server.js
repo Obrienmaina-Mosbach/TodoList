@@ -19,7 +19,11 @@ const createExpressApp = () => {
   app.use(express.urlencoded({ extended: false })); // Body parser for URL-encoded data
 
 // Define the allowed origin (update with your frontend URL)
-const allowedOrigins = ['https://todo-list-nine-vert-88.vercel.app'];
+const allowedOrigins = [
+  'https://todo-list-nine-vert-88.vercel.app',
+  'https://todo-list-git-main-obrienmaina-mosbachs-projects.vercel.app',
+  process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : null
+].filter(Boolean);
 
 app.use(cors({
   origin: function (origin, callback) {
