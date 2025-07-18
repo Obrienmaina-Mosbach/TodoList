@@ -1,11 +1,29 @@
 // server/api/index.js
-// This file acts as the entry point for your Vercel serverless function.
-
 const serverless = require('serverless-http');
-const createExpressApp = require('../server'); // Path to your server.js which exports createExpressApp
+// Import the async function that creates and initializes the Express app
+const initializeApp = require('../server/server'); // Correct path to server.js
 
-// Create an instance of your Express app
-const app = createExpressApp();
+let cachedServerlessHandler = null;
 
-// Wrap the Express app with serverless-http
-module.exports = serverless(app);
+// This is the Vercel serverless function entry point
+module.exports = async (req, res) => {
+  if (cachedServerlessHandler) {
+    // If the handler is cached, just use it
+    return cachedServerlessHandler(req, res);
+  }
+
+  try {
+    // Await the initialization of the Express app, which includes DB connection
+    const app = await initializeApp();
+    // Wrap the initialized Express app with serverless-http
+    cachedServerlessHandler = serverless(app);
+    console.log('Vercel serverless handler initialized and cached.');
+    return cachedServerlessHandler(req, res);
+  } catch (error) {
+    console.error('Failed to initialize serverless function:', error);
+    // Respond with a 500 error if initialization fails
+    res.statusCode = 500;
+    res.setHeader('Content-Type', 'text/plain');
+    res.end('Internal Server Error: Could not initialize application.');
+  }
+};
