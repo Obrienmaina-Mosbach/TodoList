@@ -2,40 +2,29 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const connectDB = require('./config/db'); // Import the connectDB function
+const connectDB = require('./config/db');
 const todoRoutes = require('./routes/todoRoutes');
 
-// Load env vars for local development
 dotenv.config({ path: './.env' });
 
-// Function to create and configure the Express app
-// This function will now handle the database connection internally
 const createExpressApp = () => {
+  console.log('createExpressApp: Starting Express app creation.'); // NEW LOG
   const app = express();
 
-  // Middleware
-  app.use(express.json()); // Body parser for raw JSON
-  app.use(express.urlencoded({ extended: false })); // Body parser for URL-encoded data
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
 
-  // Enable CORS for specific origins (recommended for production)
-  // Replace <YOUR_VERCEL_FRONTEND_DOMAIN> with your actual Vercel frontend domain.
   app.use(cors({
-    origin: '*', // TEMPORARY: Allow all origins for debugging CORS
+    origin: '*', // Keep this as '*' for now to rule out CORS entirely
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
   }));
 
-  // Mount routes
-  // The vercel.json routes /api/(.*) to this function, and serverless-http
-  // will pass the full path. So, Express needs to handle /api/todos directly.
   app.use('/api/todos', todoRoutes);
-
-  return app; 
+  console.log('createExpressApp: Express app created and routes mounted.'); // NEW LOG
+  return app;
 };
 
-// Export async function that connects to DB and then returns the Express app
-// This ensures DB connection is established before the app starts processing requests.
-// This is crucial for serverless functions.
 let cachedApp = null;
 let cachedDbConnection = null;
 
@@ -46,21 +35,18 @@ module.exports = async () => {
   }
 
   try {
-    cachedDbConnection = await connectDB(); // Connect to DB and cache the connection
-    cachedApp = createExpressApp(); // Create the Express app
+    console.log('Server.js module.exports: Cold start path initiated.'); // NEW LOG
+    cachedDbConnection = await connectDB();
+    console.log('Server.js module.exports: DB connection established.'); // NEW LOG
+    cachedApp = createExpressApp(); // This is where Express app is actually created
+    console.log('Server.js module.exports: Express app instance created.'); // NEW LOG
     return cachedApp;
   } catch (error) {
-    console.error('Failed to initialize Express app or connect to DB:', error);
-    // In a serverless environment, re-throw or handle error gracefully
-    // instead of process.exit(1) which might not log effectively.
-    throw error; 
+    console.error('Server.js module.exports: Failed to initialize Express app or connect to DB:', error);
+    console.error('Server.js module.exports: Full error details:', error); // Log full error
+    throw error;
   }
-
-
-  
 };
-
-
 
 
 

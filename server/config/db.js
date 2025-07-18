@@ -1,16 +1,14 @@
-// server/config/db.js (ENSURE YOU HAVE THESE LOGS)
+// server/config/db.js
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
     console.log('Attempting to connect to MongoDB...');
-    // Only log partial URI for security, and verify it's set
     console.log('MONGO_URI prefix:', process.env.MONGO_URI ? process.env.MONGO_URI.substring(0, 40) + '...' : 'ERROR: MONGO_URI environment variable is NOT SET');
 
     const conn = await mongoose.connect(process.env.MONGO_URI, {
-      // These options are deprecated and can be removed
-      // useNewUrlParser: true,
-      // useUnifiedTopology: true,
+      // useNewUrlParser: true, // Can remove
+      // useUnifiedTopology: true, // Can remove
     });
 
     if (conn && conn.connection && conn.connection.host) {

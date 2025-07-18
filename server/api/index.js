@@ -1,31 +1,26 @@
 // server/api/index.js
-// This file acts as the entry point for your Vercel serverless function.
-
 const serverless = require('serverless-http');
-// Import the async function that creates and initializes the Express app
 const initializeApp = require('../server'); // Correct path to server.js
 
 let cachedServerlessHandler = null;
 
-// This is the Vercel serverless function entry point
 module.exports = async (req, res) => {
-  console.log('Serverless function invoked (full app initialization).'); // Log for invocation
+  console.log('Serverless function invoked (full app initialization).');
   if (cachedServerlessHandler) {
-    console.log('Using cached app and handler.'); // Log for cached use
+    console.log('Using cached app and handler.');
     return cachedServerlessHandler(req, res);
   }
 
   try {
-    console.log('Initializing new app and handler (cold start).'); // Log for cold start
-    // Await the initialization of the Express app, which includes DB connection
-    const app = await initializeApp();
-    // Wrap the initialized Express app with serverless-http
+    console.log('Initializing new app and handler (cold start).');
+    const app = await initializeApp(); // THIS IS THE CRITICAL AWAIT
+    console.log('Express app returned from initializeApp.'); // NEW LOG
     cachedServerlessHandler = serverless(app);
-    console.log('Vercel serverless handler initialized and cached.'); // Log for successful initialization
+    console.log('Vercel serverless handler initialized and cached.');
     return cachedServerlessHandler(req, res);
   } catch (error) {
-    console.error('Failed to initialize serverless function or Express app:', error); // Log for initialization error
-    // Respond with a 500 error if initialization fails
+    console.error('Failed to initialize serverless function or Express app:', error);
+    console.error('Full initialization error details:', error); // Log full error
     res.statusCode = 500;
     res.setHeader('Content-Type', 'text/plain');
     res.end('Internal Server Error: Could not initialize application.');
