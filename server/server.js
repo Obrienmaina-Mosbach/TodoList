@@ -57,7 +57,14 @@ module.exports = async () => {
     // instead of process.exit(1) which might not log effectively.
     throw error; 
   }
+
+
+  
 };
+
+
+
+
 
 // For local development, you might still want to run the server directly.
 if (require.main === module) {
