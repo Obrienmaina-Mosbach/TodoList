@@ -17,16 +17,25 @@ const createExpressApp = () => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
 
-  // Add request timeout middleware (10 seconds)
+  // Add timeout middleware using a different approach
   app.use((req, res, next) => {
-    res.setTimeout(10000, () => {
-      console.error('Request timeout occurred');
-      res.status(504).json({ message: 'Request timeout' });
+    const timeout = 10000; // 10 seconds
+    const timeoutHandler = setTimeout(() => {
+      if (!res.headersSent) {
+        console.error('Request timeout occurred');
+        res.status(504).json({ message: 'Request timeout' });
+      }
+    }, timeout);
+
+    // Clear the timeout when the response is sent
+    res.on('finish', () => {
+      clearTimeout(timeoutHandler);
     });
+
     next();
   });
 
-  // Define the allowed origins
+  // Rest of your existing middleware and routes...
   const allowedOrigins = [
     'https://todo-list-nine-vert-88.vercel.app',
     'https://todo-list-git-main-obrienmaina-mosbachs-projects.vercel.app',
