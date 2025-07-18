@@ -73,5 +73,5 @@ if (require.main === module) {
       console.error('Local server failed to start:', error);
       process.exit(1);
     }
-  })();
+  })(); //rolling back
 }
