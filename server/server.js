@@ -18,11 +18,13 @@ const createExpressApp = () => {
   app.use(express.urlencoded({ extended: false }));
 
   // Define the allowed origins
-  const allowedOrigins = [
-    'https://todo-list-nine-vert-88.vercel.app',
-    'https://todo-list-git-main-obrienmaina-mosbachs-projects.vercel.app',
-    process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : null
-  ].filter(Boolean);
+  
+    const allowedOrigins = [
+  'https://todo-list-nine-vert-88.vercel.app',                                     // Production frontend
+  'https://todo-list-git-main-obrienmaina-mosbachs-projects.vercel.app',          // Production backend
+  process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : null,         // Local development
+  process.env.NODE_ENV === 'development' ? 'http://localhost:5001' : null          // Local backend
+].filter(Boolean);
 
   app.use(cors({
     origin: function (origin, callback) {
