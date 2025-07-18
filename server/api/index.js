@@ -1,7 +1,7 @@
 // server/api/index.js
 const serverless = require('serverless-http');
-// Import the async function that creates and initializes the Express app
-const initializeApp = require('../server/server'); // Correct path to server.js
+// CORRECTED PATH: Go up one level (from 'api' to 'server'), then find 'server.js'
+const initializeApp = require('../server'); // Path to server.js (Node.js automatically looks for index.js or a file with the same name as the directory if not specified, but here 'server.js' is a file)
 
 let cachedServerlessHandler = null;
 
