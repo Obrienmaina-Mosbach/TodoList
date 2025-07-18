@@ -32,10 +32,10 @@ const createExpressApp = () => {
   // will pass the full path. So, Express needs to handle /api/todos directly.
   app.use('/api/todos', todoRoutes);
 
-  return app;
+  return app; 
 };
 
-// Export an async function that connects to DB and then returns the Express app
+// Export async function that connects to DB and then returns the Express app
 // This ensures DB connection is established before the app starts processing requests.
 // This is crucial for serverless functions.
 let cachedApp = null;
