@@ -21,7 +21,7 @@ const createExpressApp = () => {
   // Replace <YOUR_VERCEL_FRONTEND_DOMAIN> with your actual Vercel frontend domain.
   app.use(cors({
     origin: process.env.NODE_ENV === 'production'
-      ? 'https://todo-list-nine-jade-67.vercel.app' // Ensure no trailing slash here
+      ? 'https://todo-list-obrienmaina-mosbachs-projects.vercel.app' // Ensure no trailing slash here
       : 'http://localhost:8080',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
